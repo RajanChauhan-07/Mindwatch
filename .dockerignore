@@ -1,0 +1,33 @@
+# Git
+.git/
+.gitignore
+
+# Python
+backend/venv/
+backend/.venv/
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/.Python
+**/*.egg-info/
+**/.pytest_cache/
+**/.mypy_cache/
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# Large ML model weights (not committed to repo anyway)
+ml/models/bert_emotion_classifier/model.safetensors
+ml/models/content_classifier.pkl
+ml/data/*.csv
+
+# Env files (secrets must be set in HF Spaces Secrets UI)
+**/.env
+
+# macOS
+**/.DS_Store
+
+# Logs
+**/*.log

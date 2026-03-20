@@ -349,3 +349,72 @@ MIT License — see [LICENSE](LICENSE) for details.
 Built by **Rajan Chauhan** · [GitHub](https://github.com/RajanChauhan-07)
 
 > "Understanding yourself is the beginning of all wisdom." — Aristotle
+
+---
+
+## Deployment on Hugging Face Spaces
+
+MindWatch ships with a `Dockerfile` that builds the React frontend and serves it alongside the FastAPI backend — no separate servers needed.
+
+### Steps
+
+**1. Create a new Space**
+- Go to [huggingface.co/new-space](https://huggingface.co/new-space)
+- Owner: your username
+- Space name: `mindwatch` (or anything you like)
+- SDK: **Docker**
+- Visibility: Public or Private
+
+**2. Add your API keys as Secrets**
+
+In your Space → Settings → Repository secrets, add:
+
+| Secret Name | Value |
+|---|---|
+| `SECRET_KEY` | Any long random string |
+| `GOOGLE_CLIENT_ID` | From Google Cloud Console |
+| `GOOGLE_CLIENT_SECRET` | From Google Cloud Console |
+| `GOOGLE_REDIRECT_URI` | `https://YOUR-SPACE-URL.hf.space/api/auth/google/callback` |
+| `SPOTIFY_CLIENT_ID` | From Spotify Developer Dashboard |
+| `SPOTIFY_CLIENT_SECRET` | From Spotify Developer Dashboard |
+| `SPOTIFY_REDIRECT_URI` | `https://YOUR-SPACE-URL.hf.space/api/connectors/spotify/callback` |
+| `GOOGLE_FIT_REDIRECT_URI` | `https://YOUR-SPACE-URL.hf.space/api/connectors/googlefit/callback` |
+| `GEMINI_API_KEY` | From Google AI Studio |
+| `FRONTEND_URL` | `https://YOUR-SPACE-URL.hf.space` |
+| `DATABASE_URL` | (Optional) PostgreSQL URL from Supabase/Neon for persistent storage |
+
+> Your Space URL is `https://huggingface.co/spaces/YOUR_USERNAME/mindwatch` — the app URL is `https://YOUR_USERNAME-mindwatch.hf.space`
+
+**3. Update OAuth Redirect URIs**
+
+In **Google Cloud Console** → Credentials → your OAuth Client, add:
+```
+https://YOUR_USERNAME-mindwatch.hf.space/api/auth/google/callback
+https://YOUR_USERNAME-mindwatch.hf.space/api/connectors/googlefit/callback
+```
+
+In **Spotify Dashboard** → your app → Redirect URIs, add:
+```
+https://YOUR_USERNAME-mindwatch.hf.space/api/connectors/spotify/callback
+```
+
+**4. Push the repo to your Space**
+```bash
+# Add your HF Space as a remote
+git remote add space https://huggingface.co/spaces/YOUR_USERNAME/mindwatch
+
+# Push (HF will build the Docker image automatically)
+git push space main
+```
+
+**5. Wait for the build**
+HF Spaces will build the Docker image (~5-10 minutes first time). Watch progress in the Space's "Logs" tab.
+
+### Database Note
+
+By default the app uses **SQLite** stored in `/tmp` (ephemeral — data resets on restart). For persistent data, set the `DATABASE_URL` secret to a free PostgreSQL from:
+- [Supabase](https://supabase.com) — 500MB free
+- [Neon](https://neon.tech) — 512MB free
+
+Both give you a `postgresql://...` connection string to paste as the `DATABASE_URL` secret.
+

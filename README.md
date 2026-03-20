@@ -1,3 +1,14 @@
+---
+title: MindWatch
+emoji: 🧠
+colorFrom: indigo
+colorTo: purple
+sdk: docker
+pinned: false
+app_port: 7860
+short_description: AI mental wellness platform — BERT, Fuzzy Logic, Gemini AI
+---
+
 # MindWatch — Mental Wellness Intelligence Platform
 
 > **AI-powered mental wellness platform** that analyzes your digital behavior — Spotify music, YouTube content, WhatsApp chats, and Google Fit activity — using BERT, Fuzzy Logic, and Gemini AI to predict and track your mental wellness.

@@ -1,0 +1,151 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Design Tokens ─────────────────────────────────────────────────────────
+   Every color references a CSS variable so dark mode is a single class swap.
+   ─────────────────────────────────────────────────────────────────────────── */
+:root {
+  /* Canvas = page background */
+  --canvas:  #F2F2F7;
+  /* Surfaces */
+  --surface: #FFFFFF;
+  --raised:  #FAFAFA;
+  --overlay: rgba(255,255,255,0.85);
+  /* Borders */
+  --border:  rgba(0,0,0,0.07);
+  --border-2:rgba(0,0,0,0.11);
+  /* Text */
+  --tx:      #0A0A0A;
+  --tx-2:    #6B6B6B;
+  --tx-3:    #ADADAD;
+  /* Accent (static — same light/dark) */
+  --blue:    #0071E3;
+  --indigo:  #6366F1;
+  --purple:  #A855F7;
+  --green:   #22C55E;
+  --amber:   #F59E0B;
+  --red:     #EF4444;
+  --cyan:    #06B6D4;
+  --pink:    #EC4899;
+  /* Shadows */
+  --sh:      0 1px 2px rgba(0,0,0,.04),0 4px 12px rgba(0,0,0,.04),0 0 0 1px rgba(0,0,0,.04);
+  --sh-lg:   0 2px 4px rgba(0,0,0,.04),0 8px 28px rgba(0,0,0,.07),0 0 0 1px rgba(0,0,0,.05);
+  --sh-xl:   0 4px 8px rgba(0,0,0,.05),0 20px 60px rgba(0,0,0,.10),0 0 0 1px rgba(0,0,0,.05);
+}
+.dark {
+  --canvas:  #000000;
+  --surface: #0D0D0D;
+  --raised:  #161616;
+  --overlay: rgba(13,13,13,0.88);
+  --border:  rgba(255,255,255,0.08);
+  --border-2:rgba(255,255,255,0.14);
+  --tx:      #F5F5F5;
+  --tx-2:    #8C8C8C;
+  --tx-3:    #4A4A4A;
+  --sh:      0 1px 2px rgba(0,0,0,.6),0 4px 12px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.05);
+  --sh-lg:   0 2px 4px rgba(0,0,0,.7),0 8px 28px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.06);
+  --sh-xl:   0 4px 8px rgba(0,0,0,.8),0 20px 60px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.07);
+}
+
+/* ─── Base ───────────────────────────────────────────────────────────────── */
+*,*::before,*::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-feature-settings: 'cv02','cv03','cv04','cv11','ss01';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--canvas);
+  color: var(--tx);
+  margin: 0; padding: 0;
+  min-height: 100vh;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+/* ─── Tile (main card primitive) ─────────────────────────────────────────── */
+.tile {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: var(--sh);
+  transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+}
+.tile:hover { box-shadow: var(--sh-lg); }
+
+.tile-lg {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 32px;
+  box-shadow: var(--sh-lg);
+}
+
+/* ─── Glass ──────────────────────────────────────────────────────────────── */
+.glass {
+  background: var(--overlay);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--border);
+}
+
+/* ─── Gradient text ──────────────────────────────────────────────────────── */
+.g-text {
+  background: linear-gradient(135deg, #6366F1 0%, #A855F7 50%, #EC4899 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.g-text-blue {
+  background: linear-gradient(135deg, #0071E3, #6366F1);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.g-text-green {
+  background: linear-gradient(135deg, #22C55E, #06B6D4);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ─── Noise texture overlay ──────────────────────────────────────────────── */
+.noise::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  opacity: 0.025;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* ─── Scrollbar ──────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 99px; }
+.no-scroll::-webkit-scrollbar { display: none; }
+
+/* ─── Focus ──────────────────────────────────────────────────────────────── */
+:focus-visible { outline: 2px solid var(--indigo); outline-offset: 2px; border-radius: 8px; }
+
+/* ─── Selection ──────────────────────────────────────────────────────────── */
+::selection { background: rgba(99,102,241,.18); color: var(--tx); }
+
+/* ─── Input reset ────────────────────────────────────────────────────────── */
+input, textarea { color: var(--tx); }
+input::placeholder, textarea::placeholder { color: var(--tx-3); }
+
+/* ─── Shimmer loading skeleton ───────────────────────────────────────────── */
+.skeleton {
+  background: linear-gradient(90deg, var(--raised) 25%, var(--canvas) 50%, var(--raised) 75%);
+  background-size: 400% 100%;
+  animation: shimmer 1.6s ease infinite;
+}
+
+/* ─── Theme transition (everything except transforms) ────────────────────── */
+*, *::before, *::after {
+  transition-property: background-color, border-color, box-shadow, color, fill, stroke, opacity;
+  transition-duration: 200ms;
+  transition-timing-function: ease;
+}
+a, button { transition-property: background-color, border-color, box-shadow, color, transform, opacity; }

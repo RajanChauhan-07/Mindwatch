@@ -153,13 +153,9 @@ export default function Dashboard() {
     catch {} finally { setLoadingFit(false) }
   }, [])
 
-  const getBase = () => {
-    if (API_URL) return API_URL
-    try { const u = new URL(window.location.href); return `${u.protocol}//${u.host}` }
-    catch { return '' }
-  }
-  const connectSpotify = () => window.open(`${getBase()}/api/connectors/spotify/connect?token=${token}`, '_top')
-  const connectFit    = () => window.open(`${getBase()}/api/connectors/googlefit/connect?token=${token}`, '_top')
+  // Direct navigation — most reliable across all iframe sandbox policies
+  const connectSpotify = () => { window.location.href = `/api/connectors/spotify/connect?token=${token}` }
+  const connectFit    = () => { window.location.href = `/api/connectors/googlefit/connect?token=${token}` }
 
   const handleYtUpload = async () => {
     const f = watchRef.current?.files?.[0]

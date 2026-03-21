@@ -78,20 +78,6 @@ export default function LandingPage() {
   const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '20%'])
   const heroOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0])
 
-  // Get the absolute base URL — works in sandboxed iframes where
-  // window.location.origin returns "null" (opaque origin).
-  const getBase = () => {
-    if (API_URL) return API_URL
-    try { const u = new URL(window.location.href); return `${u.protocol}//${u.host}` }
-    catch { return '' }
-  }
-
-  const handleSignIn = () => {
-    const url = `${getBase()}/api/auth/google`
-    // window.open with _top navigates the full browser window out of the HF iframe.
-    // This is what worked in earlier iterations — the user successfully reached Google OAuth.
-    window.open(url, '_top')
-  }
 
   return (
     <div className="min-h-screen overflow-x-hidden" style={{ background: 'var(--canvas)' }}>
@@ -113,11 +99,11 @@ export default function LandingPage() {
               {dark ? <Sun size={16} /> : <Moon size={16} />}
             </button>
             <Magnetic strength={0.25}>
-              <button onClick={handleSignIn}
-                className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90"
+              <a href="/api/auth/google" target="_blank" rel="noopener"
+                className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 inline-block"
                 style={{ background: 'linear-gradient(135deg, #0071E3, #6366F1)', boxShadow: '0 2px 16px rgba(0,113,227,0.35)' }}>
                 Sign In
-              </button>
+              </a>
             </Magnetic>
           </div>
         </div>
@@ -175,15 +161,14 @@ export default function LandingPage() {
           <BlurReveal delay={0.34}>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Magnetic strength={0.3}>
-                <button onClick={handleSignIn}
-                  className="group relative overflow-hidden flex items-center gap-3 px-8 py-4 rounded-2xl text-white font-black text-base transition-all"
+                <a href="/api/auth/google" target="_blank" rel="noopener"
+                  className="group relative overflow-hidden flex items-center gap-3 px-8 py-4 rounded-2xl text-white font-black text-base transition-all inline-flex"
                   style={{ background: 'linear-gradient(135deg, #6366F1 0%, #A855F7 50%, #EC4899 100%)', boxShadow: '0 4px 40px rgba(99,102,241,0.5)', minWidth: 200 }}>
-                  {/* Shimmer */}
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                     style={{ background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%)', backgroundSize: '200% 100%' }} />
                   Get Started Free
                   <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                </button>
+                </a>
               </Magnetic>
               <div className="flex items-center gap-2 text-sm" style={{ color: 'var(--tx-2)' }}>
                 <Shield size={14} style={{ color: 'var(--green)' }} />
@@ -362,12 +347,12 @@ export default function LandingPage() {
               </h2>
               <p className="text-lg mb-8" style={{ color: 'var(--tx-2)' }}>Free forever. No credit card. Just insights.</p>
               <Magnetic>
-                <button onClick={handleSignIn}
+                <a href="/api/auth/google" target="_blank" rel="noopener"
                   className="group inline-flex items-center gap-3 px-8 py-4 rounded-2xl text-white font-black text-base transition-all"
                   style={{ background: 'linear-gradient(135deg, #6366F1, #A855F7)', boxShadow: '0 4px 40px rgba(99,102,241,0.5)' }}>
                   Get Started Free
                   <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                </button>
+                </a>
               </Magnetic>
             </div>
           </div>

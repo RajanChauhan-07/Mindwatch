@@ -78,13 +78,20 @@ export default function LandingPage() {
   const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '20%'])
   const heroOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0])
 
-  // Build absolute URL - required so _top navigation resolves to the right origin
-  const absUrl = (path: string) => {
-    if (API_URL) return `${API_URL}${path}`
-    return `${window.location.origin}${path}`
+  // Navigate breaking out of any iframe - works even in sandboxed HF Spaces iframe.
+  // anchor + target="_top" is never blocked by popup blockers.
+  // Use href-based origin because window.location.origin returns "null" in sandboxed iframes.
+  const oauthNavigate = (path: string) => {
+    const origin = API_URL || (() => {
+      try { const u = new URL(window.location.href); return `${u.protocol}//${u.host}` }
+      catch { return '' }
+    })()
+    const url = `${origin}${path}`
+    const a = document.createElement('a')
+    a.href = url; a.target = '_top'; a.rel = 'noopener noreferrer'
+    document.body.appendChild(a); a.click(); document.body.removeChild(a)
   }
-  // window.open(_top) breaks out of the HF Spaces iframe correctly
-  const handleSignIn = () => { window.open(absUrl('/api/auth/google'), '_top') }
+  const handleSignIn = () => oauthNavigate('/api/auth/google')
 
   return (
     <div className="min-h-screen overflow-x-hidden" style={{ background: 'var(--canvas)' }}>

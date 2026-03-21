@@ -153,9 +153,17 @@ export default function Dashboard() {
     catch {} finally { setLoadingFit(false) }
   }, [])
 
-  const absUrl = (path: string) => API_URL ? `${API_URL}${path}` : `${window.location.origin}${path}`
-  const connectSpotify = () => { window.open(absUrl(`/api/connectors/spotify/connect?token=${token}`), '_top') }
-  const connectFit = () => { window.open(absUrl(`/api/connectors/googlefit/connect?token=${token}`), '_top') }
+  const oauthNavigate = (path: string) => {
+    const origin = API_URL || (() => {
+      try { const u = new URL(window.location.href); return `${u.protocol}//${u.host}` }
+      catch { return '' }
+    })()
+    const a = document.createElement('a')
+    a.href = `${origin}${path}`; a.target = '_top'; a.rel = 'noopener noreferrer'
+    document.body.appendChild(a); a.click(); document.body.removeChild(a)
+  }
+  const connectSpotify = () => oauthNavigate(`/api/connectors/spotify/connect?token=${token}`)
+  const connectFit    = () => oauthNavigate(`/api/connectors/googlefit/connect?token=${token}`)
 
   const handleYtUpload = async () => {
     const f = watchRef.current?.files?.[0]

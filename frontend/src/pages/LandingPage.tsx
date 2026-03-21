@@ -78,7 +78,19 @@ export default function LandingPage() {
   const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '20%'])
   const heroOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0])
 
-  const handleSignIn = () => { window.location.href = `${API_URL}/api/auth/google` }
+  // Break out of HF Spaces iframe so OAuth redirects work
+  const navigate = (url: string) => {
+    try {
+      if (window.top && window.top !== window.self) {
+        window.top.location.href = url
+      } else {
+        window.location.href = url
+      }
+    } catch {
+      window.location.href = url
+    }
+  }
+  const handleSignIn = () => { navigate(`${API_URL}/api/auth/google`) }
 
   return (
     <div className="min-h-screen overflow-x-hidden" style={{ background: 'var(--canvas)' }}>

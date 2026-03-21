@@ -153,20 +153,9 @@ export default function Dashboard() {
     catch {} finally { setLoadingFit(false) }
   }, [])
 
-  // Break out of HF Spaces iframe for OAuth
-  const navigateOAuth = (url: string) => {
-    try {
-      if (window.top && window.top !== window.self) {
-        window.top.location.href = url
-      } else {
-        window.location.href = url
-      }
-    } catch {
-      window.location.href = url
-    }
-  }
-  const connectSpotify = () => { navigateOAuth(`${API_URL}/api/connectors/spotify/connect?token=${token}`) }
-  const connectFit = () => { navigateOAuth(`${API_URL}/api/connectors/googlefit/connect?token=${token}`) }
+  const absUrl = (path: string) => API_URL ? `${API_URL}${path}` : `${window.location.origin}${path}`
+  const connectSpotify = () => { window.open(absUrl(`/api/connectors/spotify/connect?token=${token}`), '_top') }
+  const connectFit = () => { window.open(absUrl(`/api/connectors/googlefit/connect?token=${token}`), '_top') }
 
   const handleYtUpload = async () => {
     const f = watchRef.current?.files?.[0]

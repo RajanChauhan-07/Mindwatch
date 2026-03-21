@@ -108,3 +108,13 @@ async def get_me(token: str, db: Session = Depends(get_db)):
         "google_fit_connected": user.google_fit_connected,
         "notion_connected": user.notion_connected,
     }
+
+
+@router.get("/debug-config")
+async def debug_config():
+    """Shows the exact redirect URIs configured — compare with GCP."""
+    return {
+        "google_redirect_uri": settings.GOOGLE_REDIRECT_URI,
+        "google_client_id_set": bool(settings.GOOGLE_CLIENT_ID),
+        "frontend_url": settings.FRONTEND_URL,
+    }

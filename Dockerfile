@@ -8,8 +8,6 @@ RUN npm ci --prefer-offline
 
 COPY frontend/ ./
 
-# Empty VITE_API_URL = same-origin (frontend and backend served together)
-ENV VITE_API_URL=""
 RUN npm run build
 
 

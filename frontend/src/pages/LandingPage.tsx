@@ -7,7 +7,7 @@ import BlurReveal from '../components/effects/BlurReveal'
 import Magnetic from '../components/effects/Magnetic'
 import { useThemeStore } from '../store/themeStore'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+const API_URL = import.meta.env.VITE_API_URL || ''
 
 const BENTO = [
   {

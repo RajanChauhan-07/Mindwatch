@@ -14,7 +14,7 @@ import LoadingSpinner from '../components/LoadingSpinner'
 import Aurora from '../components/effects/Aurora'
 import BlurReveal from '../components/effects/BlurReveal'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+const API_URL = import.meta.env.VITE_API_URL || ''
 type Tab = 'overview' | 'music' | 'youtube' | 'whatsapp' | 'googlefit' | 'predictions'
 
 interface SpotifyData {

@@ -13,8 +13,13 @@ export default function AuthCallback() {
     const token = params.get('token')
     const error = params.get('error')
 
-    if (error || !token) {
-      navigate('/?error=auth_failed')
+    if (error) {
+      navigate(`/?error=${encodeURIComponent(error)}`)
+      return
+    }
+
+    if (!token) {
+      navigate('/?error=missing_token')
       return
     }
 
@@ -25,7 +30,7 @@ export default function AuthCallback() {
         navigate('/dashboard')
       })
       .catch(() => {
-        navigate('/?error=auth_failed')
+        navigate('/?error=session_validation_failed')
       })
   }, [])
 

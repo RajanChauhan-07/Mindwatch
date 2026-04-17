@@ -9,6 +9,17 @@ import { useThemeStore } from '../store/themeStore'
 
 const API_URL = import.meta.env.VITE_API_URL || ''
 
+const AUTH_ERROR_MESSAGES: Record<string, string> = {
+  auth_failed: 'Authentication failed - please try again.',
+  google_client_id_missing: 'Google sign-in is missing its client ID.',
+  missing_token: 'Google sign-in finished without a session token.',
+  oauth_failed: 'Google sign-in was cancelled or rejected.',
+  server_error: 'The sign-in server hit an error. Please try again.',
+  session_validation_failed: 'Your session token could not be verified.',
+  token_exchange_failed: 'Google rejected the OAuth token exchange.',
+  userinfo_failed: 'Google sign-in succeeded, but profile lookup failed.',
+}
+
 const BENTO = [
   {
     icon: Music, color: '#6366F1', size: 'col-span-12 md:col-span-4 row-span-2',
@@ -72,6 +83,10 @@ const BENTO = [
 
 export default function LandingPage() {
   const [params] = useSearchParams()
+  const authError = params.get('error')
+  const authErrorMessage = authError
+    ? AUTH_ERROR_MESSAGES[authError] ?? 'Authentication failed - please try again.'
+    : null
   const { dark, toggle } = useThemeStore()
   const heroRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({ target: heroRef })
@@ -124,11 +139,11 @@ export default function LandingPage() {
         />
 
         <motion.div style={{ y: heroY, opacity: heroOpacity }} className="relative z-10 text-center px-6 max-w-5xl mx-auto">
-          {params.get('error') && (
+          {authErrorMessage && (
             <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
               className="inline-flex items-center gap-2 text-sm px-4 py-2 rounded-pill mb-8"
               style={{ background: 'rgba(239,68,68,0.1)', color: '#EF4444', border: '1px solid rgba(239,68,68,0.2)' }}>
-              Authentication failed — please try again.
+              {authErrorMessage}
             </motion.div>
           )}
 

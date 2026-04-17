@@ -1,4 +1,5 @@
 import urllib.parse
+import logging
 
 import httpx
 from fastapi import APIRouter, Depends, HTTPException
@@ -11,6 +12,7 @@ from ..core.security import create_access_token, verify_token
 from ..models.user import User
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
 GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
@@ -19,6 +21,10 @@ GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo"
 
 @router.get("/google")
 async def google_login():
+    if not settings.GOOGLE_CLIENT_ID:
+        logger.error("Google OAuth login attempted without GOOGLE_CLIENT_ID")
+        return RedirectResponse(url=f"{settings.FRONTEND_URL}?error=google_client_id_missing")
+
     params = {
         "client_id": settings.GOOGLE_CLIENT_ID,
         "redirect_uri": settings.GOOGLE_REDIRECT_URI,
@@ -54,6 +60,12 @@ async def google_callback(
             token_data = token_response.json()
 
             if "access_token" not in token_data:
+                logger.error(
+                    "Google OAuth token exchange failed: status=%s error=%s description=%s",
+                    token_response.status_code,
+                    token_data.get("error"),
+                    token_data.get("error_description"),
+                )
                 return RedirectResponse(url=f"{settings.FRONTEND_URL}?error=token_exchange_failed")
 
             userinfo_response = await client.get(
@@ -61,6 +73,14 @@ async def google_callback(
                 headers={"Authorization": f"Bearer {token_data['access_token']}"},
             )
             userinfo = userinfo_response.json()
+
+            if userinfo_response.status_code >= 400 or "sub" not in userinfo or "email" not in userinfo:
+                logger.error(
+                    "Google OAuth userinfo failed: status=%s keys=%s",
+                    userinfo_response.status_code,
+                    sorted(userinfo.keys()) if isinstance(userinfo, dict) else [],
+                )
+                return RedirectResponse(url=f"{settings.FRONTEND_URL}?error=userinfo_failed")
 
         user = db.query(User).filter(User.google_id == userinfo["sub"]).first()
         if not user:
@@ -86,6 +106,7 @@ async def google_callback(
         return RedirectResponse(url=f"{settings.FRONTEND_URL}/auth/callback?token={token}")
 
     except Exception:
+        logger.exception("Google OAuth callback failed")
         return RedirectResponse(url=f"{settings.FRONTEND_URL}?error=server_error")
 
 
@@ -116,5 +137,6 @@ async def debug_config():
     return {
         "google_redirect_uri": settings.GOOGLE_REDIRECT_URI,
         "google_client_id_set": bool(settings.GOOGLE_CLIENT_ID),
+        "google_client_secret_set": bool(settings.GOOGLE_CLIENT_SECRET),
         "frontend_url": settings.FRONTEND_URL,
     }

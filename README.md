@@ -267,7 +267,7 @@ uvicorn app.main:app --reload --port 8000
 cd frontend && npm run dev
 ```
 
-Open **http://localhost:5173**
+Open **https://huggingface.co/spaces/rajanchauhan/mindwatch**
 
 ---
 
@@ -285,8 +285,9 @@ See `backend/.env.example` for all required environment variables.
 
 **Google Cloud Console:**
 ```
-http://localhost:8000/api/auth/google/callback
-http://localhost:8000/api/connectors/googlefit/callback
+https://rajanchauhan-mindwatch.hf.space
+https://rajanchauhan-mindwatch.hf.space/api/auth/google/callback
+https://rajanchauhan-mindwatch.hf.space/api/connectors/googlefit/callback
 ```
 
 **Spotify Dashboard:**
@@ -332,14 +333,6 @@ The app features:
 - **Score Ring** — Animated count-up with ambient color glow
 - **Dark Mode** — True black (`#000`) with glass surface cards
 - **Chatbot** — Floating AI panel with spring animations
-
----
-
-## API Documentation
-
-Once running, full interactive API docs available at:
-- **Swagger UI**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
 
 ---
 
